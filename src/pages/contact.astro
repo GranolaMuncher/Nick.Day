@@ -1,0 +1,13 @@
+---
+import Plain from '../layouts/Plain.astro';
+import Contact from '../components/Contact.astro';
+---
+<Plain title="Contact" heading="Contact" description="Tell Nicholas Day what's broken in your business systems. Replies within 2–3 days." path="/contact">
+  <Contact />
+</Plain>
+<script>
+  import { initContact } from '../scripts/contact.js';
+  const c = initContact();
+  const scope = new URLSearchParams(location.search).get('scope');
+  if (c && scope) c.setScope(scope.slice(0, 500));
+</script>

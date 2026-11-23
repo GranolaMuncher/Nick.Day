@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro';
+import Win from '../components/Win.astro';
+import Services from '../components/Services.astro';
+import Work from '../components/Work.astro';
+import Experience from '../components/Experience.astro';
+import About from '../components/About.astro';
+import Contact from '../components/Contact.astro';
+import { site } from '../data/site.js';
+
+const icons = [
+  ['services', './services', '<rect x="3" y="4" width="18" height="12"></rect><path d="M8 20h8M12 16v4M7 9l2 2-2 2M12 13h4"></path>'],
+  ['work', './work', '<path d="M3 6h6l2 2h10v11H3z"></path>'],
+  ['experience', './experience', '<rect x="5" y="3" width="14" height="18"></rect><path d="M9 7h6M9 11h6M9 15h4"></path>'],
+  ['about', './about', '<circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path>'],
+  ['contact', './contact', '<rect x="3" y="5" width="18" height="14"></rect><path d="M3 6l9 7 9-7"></path>'],
+  ['diagnose', 'diagnose.exe', '<circle cx="11" cy="11" r="7"></circle><path d="M16 16l5 5M8 11h1.5l1-2 1.5 4 1-2H14"></path>'],
+  ['calc', 'chaos_calc.exe', '<rect x="5" y="3" width="14" height="18"></rect><path d="M8 7h8M8 11h2M12 11h2M8 14h2M12 14h2M8 17h2M12 17h4"></path>'],
+  ['taskmgr', 'taskmgr.exe', '<rect x="3" y="4" width="18" height="16"></rect><path d="M6 15l3-4 3 2 3-5 3 3"></path>'],
+  ['defrag', 'defrag.exe', '<rect x="3" y="3" width="5" height="5"></rect><rect x="10" y="3" width="5" height="5"></rect><rect x="17" y="3" width="4" height="5"></rect><rect x="3" y="10" width="5" height="5"></rect><rect x="10" y="10" width="5" height="5"></rect><path d="M3 18h18v3H3z"></path>'],
+  ['terminal', 'terminal', '<rect x="3" y="4" width="18" height="16"></rect><path d="M7 9l3 3-3 3M12 15h5"></path>'],
+  ['estimate', 'estimate.exe', '<path d="M4 4h16v16H4z"></path><path d="M8 9l2 2 4-4M8 15h8"></path>'],
+  ['inbox', 'inbox.exe', '<path d="M3 13l3-8h12l3 8v6H3z"></path><path d="M3 13h5l1 2h6l1-2h5"></path>'],
+];
+const binIcon = '<path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6"></path>';
+const spots = site.newClientSpotsThisQuarter;
+---
+<Base path="/">
+  <div class="crt flick" id="os" data-idle={site.idleSeconds}>
+    <noscript>
+      <div style="padding: 32px; max-width: 720px">
+        <h1 class="vt" style="font-size: 56px; margin: 0">NICHOLAS DAY</h1>
+        <p>{site.headline} The interactive desktop needs JavaScript, but everything is also on plain pages:</p>
+        <p><a href="/services">Services</a> · <a href="/work">Work</a> · <a href="/experience">Experience</a> · <a href="/about">About</a> · <a href="/contact">Contact</a></p>
+      </div>
+    </noscript>
+
+    <div class="screen" id="off">
+      <div class="vt dim" style="font-size: 28px">NICK.OS v1.0 — (c) Nicholas Day</div>
+      <button type="button" class="power" id="power" aria-label="Power on"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3v9"></path><path d="M6.3 7a8 8 0 1 0 11.4 0"></path></svg></button>
+      <div class="vt" style="font-size: 26px">Press the power button<span class="blink">_</span></div>
+      <a href="/services" style="font-size: 13px">Prefer plain text? Read the site as pages</a>
+    </div>
+
+    <div class="screen vt" id="boot" hidden aria-live="polite"><div id="bootlines"></div><div><span class="blink">█</span></div></div>
+
+    <div id="desktop" hidden>
+      <div class="hero">
+        <h1 class="vt">NICHOLAS DAY</h1>
+        <p class="light" style="margin: 12px 0 0 0; font-size: 16px; line-height: 1.6">{site.headline}</p>
+        <p style="margin: 6px 0 0 0; font-size: 14px; line-height: 1.6">Business systems, automation and AI agents, websites and online stores, and the SEO and ads that bring customers in. Built lean and owned by you. A decade inside companies like Cisco and Google, plus products I've founded and shipped myself.</p>
+        <p class="dim" style="margin: 12px 0 0 0; font-size: 13px">{site.region} · Open an icon to see a page. · <a class="plain-link" href="/services">Plain-text version</a></p>
+      </div>
+
+      <nav class="icons" aria-label="Desktop">
+        {icons.map(([k, label, svg]) => (
+          <button type="button" class="icon" data-open={k}><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" set:html={svg}></svg><span>{label}</span></button>
+        ))}
+      </nav>
+      <div class="rbin"><button type="button" class="icon" data-open="recycle"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" set:html={binIcon}></svg><span>Recycle Bin</span></button></div>
+
+      <Win id="services" label="./services" width={760} x={420} y={28}><Services /></Win>
+      <Win id="work" label="./work" width={720} x={440} y={44}><Work /></Win>
+      <Win id="experience" label="./experience" width={600} x={460} y={72}><Experience /></Win>
+      <Win id="about" label="./about" width={560} x={500} y={60}><About /></Win>
+      <Win id="contact" label="./contact" width={460} x={620} y={40}><Contact /></Win>
+      <Win id="diagnose" label="diagnose.exe" width={560} x={440} y={36}><div data-app="diagnose"></div></Win>
+      <Win id="calc" label="chaos_calc.exe" width={540} x={480} y={52}><div data-app="calc"></div></Win>
+      <Win id="taskmgr" label="taskmgr.exe" width={600} x={460} y={64}><div data-app="taskmgr"></div></Win>
+      <Win id="defrag" label="defrag.exe" width={580} x={470} y={40}><div data-app="defrag"></div></Win>
+      <Win id="terminal" label="terminal" width={600} x={520} y={90} bodyClass="term"><div data-app="terminal"></div></Win>
+      <Win id="estimate" label="estimate.exe" width={600} x={460} y={36}><div data-app="estimate"></div></Win>
+      <Win id="inbox" label="inbox.exe" width={640} x={500} y={56}><div data-app="inbox"></div></Win>
+      <Win id="game" label="scopecreep.exe" width={460} x={600} y={24}><div data-app="game"></div></Win>
+      <Win id="recycle" label="Recycle Bin" width={500} x={640} y={60}><div data-app="recycle"></div></Win>
+    </div>
+
+    <footer class="taskbar" id="taskbar" hidden>
+      <button type="button" class="btn sm" id="shutdown" aria-label="Shut down" style="gap: 8px; border-color: var(--amber)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v9"></path><path d="M6.3 7a8 8 0 1 0 11.4 0"></path></svg><span class="vt" style="font-size: 22px">NICK.OS</span></button>
+      <div class="tasks" id="tasks"></div>
+      <div class="pill">{spots > 0 ? `New client spots this quarter: ${spots}` : 'Fully booked this quarter'}</div>
+      <button type="button" class="tbtn" id="sound" aria-pressed="true">Sound on</button>
+      <div class="uptime" id="uptime" aria-label="Uptime" style="font-size: 14px; padding: 0 8px; min-width: 64px; text-align: right">00:00</div>
+    </footer>
+
+    <div class="saver" id="saver" hidden aria-label="Screensaver: move the pointer to wake"></div>
+  </div>
+  <div class="scan" aria-hidden="true"></div>
+  <div class="vig" aria-hidden="true"></div>
+</Base>
+<script>
+  import { initOS } from '../scripts/os.js';
+  initOS();
+</script>

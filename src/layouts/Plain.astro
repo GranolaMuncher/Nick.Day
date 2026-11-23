@@ -1,0 +1,29 @@
+---
+import Base from './Base.astro';
+import { site } from '../data/site.js';
+
+interface Props { title: string; heading: string; description?: string; path: string; }
+const { title, heading, description, path } = Astro.props;
+const nav = [
+  ['/services', 'Services'], ['/work', 'Work'], ['/experience', 'Experience'], ['/about', 'About'], ['/contact', 'Contact'],
+];
+---
+<Base title={title} description={description} path={path}>
+  <div class="plain">
+    <header>
+      <a class="brand vt" href="/">NICK.OS</a>
+      <nav aria-label="Main">
+        {nav.map(([href, label]) => <a href={href} aria-current={href === path ? 'page' : undefined}>{label}</a>)}
+        <a href="/">Open the desktop</a>
+      </nav>
+    </header>
+    <main>
+      <h1 class="vt">{heading}</h1>
+      <div class="body"><slot /></div>
+    </main>
+    <footer>
+      Nicholas Day · {site.headline} · {site.region} · <a href={`mailto:${site.email}`}>{site.email}</a>
+    </footer>
+  </div>
+  <div class="scan" aria-hidden="true"></div>
+</Base>

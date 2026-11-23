@@ -1,0 +1,11 @@
+---
+interface Props { id: string; label: string; width: number; x: number; y: number; bodyClass?: string; }
+const { id, label, width, x, y, bodyClass = 'body' } = Astro.props;
+---
+<section class="win" data-win={id} aria-label={label} hidden style={`left: ${x}px; top: ${y}px; width: ${width}px`}>
+  <div class="bar" data-drag>
+    <span class="vt">{label}</span>
+    <button type="button" class="close" data-close aria-label={`Close ${label}`}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"></path></svg></button>
+  </div>
+  <div class={bodyClass}><slot /></div>
+</section>

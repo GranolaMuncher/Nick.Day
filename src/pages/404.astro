@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found" path="/404" noindex>
+  <main style="position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 32px 20px">
+    <div style="max-width: 720px; width: 100%; display: flex; flex-direction: column; gap: 20px">
+      <div style="align-self: center; background: var(--amber); color: var(--bg); text-shadow: none; padding: 2px 14px; font-family: var(--vt); font-size: 30px">NICK.OS</div>
+      <h1 style="margin: 0; font-size: 16px; font-weight: 400; line-height: 1.7">A fatal exception <b>404</b> has occurred. The page you were looking for has been moved, deleted, or never existed.</h1>
+      <p style="margin: 0; line-height: 1.7">* Unlike your business systems, this one is an easy fix.<br>* Press the button below to return to the desktop.</p>
+      <p class="dim" style="margin: 0; font-size: 13px">Error: 0x00000404 · PAGE_NOT_FOUND</p>
+      <a class="btn" href="/" style="align-self: center">Return to desktop<span class="blink">_</span></a>
+    </div>
+  </main>
+  <div class="scan" aria-hidden="true"></div>
+</Base>
