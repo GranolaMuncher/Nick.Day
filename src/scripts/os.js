@@ -53,6 +53,7 @@ export function initOS() {
   const tasks = $('#tasks');
 
   function renderTasks() {
+    const tb = $('#trophies'); if (tb && wins.achievements) tb.setAttribute('aria-pressed', String(!wins.achievements.hidden));
     tasks.textContent = '';
     Object.entries(wins).forEach(([k, el]) => {
       if (el.hidden) return;
@@ -63,6 +64,14 @@ export function initOS() {
       tasks.appendChild(b);
     });
   }
+  // taskbar trophy: opens achievements.exe, or closes it if it's already the front window
+  const trophyBtn = $('#trophies');
+  if (trophyBtn) trophyBtn.addEventListener('click', () => {
+    const w = wins.achievements; if (!w) return;
+    if (w.hidden) openWin('achievements');
+    else if (state.active === 'achievements') closeWin('achievements');
+    else focusWin('achievements');
+  });
   function focusWin(k) {
     const el = wins[k]; if (!el) return;
     state.topZ += 1; el.style.zIndex = state.topZ;
