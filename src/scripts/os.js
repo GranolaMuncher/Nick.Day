@@ -74,7 +74,9 @@ export function initOS() {
     const el = wins[k]; if (!el) return;
     if (state.phase !== 'desktop') { quickBoot(); }
     beep(740, 0.06);
+    const reopening = el.hidden;
     el.hidden = false;
+    if (reopening) { const body = $('.body', el); if (body) body.scrollTop = 0; } // reopened windows start at the top
     focusWin(k);
     apps[k] && apps[k].open && apps[k].open();
     ach && ach.opened(k);
@@ -84,11 +86,21 @@ export function initOS() {
     beep(330, 0.06);
     el.hidden = true;
     apps[k] && apps[k].close && apps[k].close();
-    if (state.active === k) state.active = null;
+    if (state.active === k) {
+      state.active = null;
+      // hand focus to the next window down, like a real OS. Without this, the first tap on the window
+      // underneath only focuses it, and iPhone Safari swallows that tap instead of clicking.
+      const next = Object.entries(wins).filter(([, w]) => !w.hidden).sort((a, b) => (Number(b[1].style.zIndex) || 0) - (Number(a[1].style.zIndex) || 0))[0];
+      if (next) { focusWin(next[0]); return; }
+    }
     renderTasks();
   }
   Object.entries(wins).forEach(([k, el]) => {
-    el.addEventListener('pointerdown', () => { if (state.active !== k) focusWin(k); });
+    // Focus on press, except on buttons/links/icons: those focus on click, so the press itself
+    // doesn't restyle the window (iPhone Safari would treat that as the tap's result and skip the click).
+    const ACTIVE_UI = 'button, a, input, select, textarea, label, [data-open]';
+    el.addEventListener('pointerdown', (e) => { if (state.active !== k && !e.target.closest(ACTIVE_UI)) focusWin(k); });
+    el.addEventListener('click', () => { if (state.active !== k && !el.hidden) focusWin(k); }, true);
     $('[data-close]', el).addEventListener('click', (e) => { e.stopPropagation(); closeWin(k); });
     const handle = $('[data-drag]', el);
     handle.addEventListener('pointerdown', (e) => {
