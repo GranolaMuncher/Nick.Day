@@ -126,7 +126,7 @@ function calc(ctx) {
       <div class="grid2" style="margin-top:12px"><div class="card" style="padding:12px"><div class="dim" style="font-size:12px">IF EVEN HALF IS AUTOMATED</div><div class="vt" style="font-size:32px" data-saved></div></div>
       <div class="card" style="padding:12px"><div class="dim" style="font-size:12px">A SYSTEMS BUILD FROM $14,000 PAYS BACK IN</div><div class="vt" style="font-size:32px" data-payback></div></div></div>
       <p class="dim" style="margin:12px 0 0;font-size:12px">Rough math (48 working weeks), not a promise. Want the real numbers? <a href="/contact" data-open="contact">Book an audit.</a></p>`;
-    r.addEventListener('input', (e) => { const k = e.target.dataset.key; if (!k) return; v[k] = Number(e.target.value); update(); ctx.ach('calc'); });
+    r.addEventListener('input', (e) => { const k = e.target.dataset.key; if (!k) return; v[k] = Number(e.target.value); update(); });
     update();
   }
   return { open: render };
@@ -210,7 +210,7 @@ function defrag(ctx) {
     t = setInterval(() => {
       for (let n = 0; n < 2 && pos < blocks.length; n++, pos++) { blocks[pos] = tgt[pos]; cells[pos].style.background = COLORS[tgt[pos]]; }
       if (pos % 24 === 0) ctx.beep(300 + pos * 3, 0.02);
-      if (pos >= blocks.length) { clearInterval(t); running = false; done = true; ctx.beep(880, 0.15); ctx.ach('defrag'); }
+      if (pos >= blocks.length) { clearInterval(t); running = false; done = true; ctx.beep(880, 0.15); }
       status();
     }, 22);
   }
@@ -272,7 +272,7 @@ function terminal(ctx) {
     else if (lc === 'inbox' || lc === 'mail') { o = ['opening inbox.exe ...']; later('inbox'); }
     else if (['play', 'snake', 'scopecreep', 'scope creep', 'game'].includes(lc)) { o = ['You found it.', 'launching scopecreep.exe ...']; later('game', 250); }
     else if (['hire', 'hire nick', 'hire me'].includes(lc)) { o = ['Excellent choice.', 'opening ./contact ...']; later('contact', 300); }
-    else if (lc === 'history') { o = ['    1  ls', '    2  open services', '    3  hi', '    4  sudo make me a sandwich', '    5  sudo roast coffee', '    6  play dnb', '    7  black belt', '    8  rm -rf /', '    9  play', '   10  hire nick', '   11  history']; ctx.ach('history'); }
+    else if (lc === 'history') { o = ['    1  ls', '    2  open services', '    3  hi', '    4  sudo make me a sandwich', '    5  sudo roast coffee', '    6  play dnb', '    7  black belt', '    8  rm -rf /', '    9  play', '   10  hire nick', '   11  history']; }
     else if (['achievements', 'trophies', 'achievements.exe'].includes(lc)) { o = ['opening achievements.exe ...']; later('achievements'); }
     else if (lc === 'date') o = [new Date().toString()];
     else if (lc === 'uptime') { const s = ctx.uptime(); o = [`up ${Math.floor(s / 60)} min ${s % 60} sec, 1 visitor`]; }
@@ -350,7 +350,6 @@ function estimate(ctx) {
   function update() {
     const r = el(), o = calcOut();
     r.querySelector('[data-range]').textContent = o.range;
-    if (o.picked.length) ctx.ach('estimate');
     r.querySelector('[data-monthly]').textContent = o.monthly;
     const n = r.querySelector('[data-notes]'); n.textContent = '';
     o.notes.forEach((t) => { const p = document.createElement('p'); p.className = 'dim'; p.style.cssText = 'margin:8px 0 0;font-size:13px'; p.textContent = '> ' + t; n.appendChild(p); });
@@ -451,6 +450,7 @@ function game(ctx) {
   const el = () => ctx.body('game');
   let g = null, timer = null, nextDir = null, best = 0, board = [], shared = false, cvs, c2d, ui = {};
   try { best = Number(localStorage.getItem('nickos-best')) || 0; } catch (e) { /* storage off */ }
+  const touch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
   const fresh = () => ({ phase: 'ready', snake: [[10, 10], [9, 10], [8, 10]], dir: [1, 0], food: [15, 10], score: 0, req: 0, won: false, saved: false });
   function food(snake) {
@@ -487,6 +487,7 @@ function game(ctx) {
     g = fresh(); g.phase = 'playing'; g.food = food(g.snake); nextDir = null;
     ui.savedMsg.hidden = true;
     ctx.beep(520, 0.08); speed(); draw(); hud();
+    if (touch) { const sc = el() && el().closest('.body'); if (sc) sc.scrollTop = 0; }
     setTimeout(() => ui.boardEl.focus({ preventScroll: true }), 30);
   }
   function pause() {
@@ -569,7 +570,7 @@ function game(ctx) {
     r.innerHTML = `<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:8px"><span class="vt" style="font-size:24px">REQUESTS: <span data-score>0</span></span><span class="vt" style="font-size:24px">BEST: <span data-best>0</span></span></div>
       <div class="board" tabindex="0" role="application" aria-label="Scope Creep game board. Use the arrow keys or WASD to move, space to pause.">
         <canvas width="400" height="400"></canvas>
-        <div class="overlay" data-ph="ready"><div class="vt" style="font-size:44px;line-height:1">SCOPE CREEP</div><div>Every request you eat makes the project longer. Hit a wall or yourself and the project goes over budget.</div><div class="dim" style="font-size:13px">Arrow keys or WASD to move · Space to pause · Reach ${TARGET} for a secret</div><button type="button" ${BTN} data-start>START &gt;</button></div>
+        <div class="overlay" data-ph="ready"><div class="vt" style="font-size:44px;line-height:1">SCOPE CREEP</div><div>Every request you eat makes the project longer. Hit a wall or yourself and the project goes over budget.</div><div class="dim" style="font-size:13px">${touch ? 'Swipe on the board or use the arrows below' : 'Arrow keys or WASD to move · Space to pause'} · Reach ${TARGET} for a secret</div><button type="button" ${BTN} data-start>START &gt;</button></div>
         <div class="overlay" data-ph="paused" hidden><div class="vt" style="font-size:40px">PAUSED</div><button type="button" ${BTN} data-resume>RESUME</button></div>
         <div class="overlay top" data-ph="won" hidden><div class="vt" style="font-size:38px;line-height:1">SCOPE MASTERED</div><div style="text-align:left;font-size:13px;border-left:2px solid var(--amber);padding-left:10px">You handled ${TARGET} requests without blowing the budget. Most projects die at five. A message from Nick: if you have the patience for this, you have the patience to fix your systems. Let’s do it properly, with a real scope.</div>${reward}<button type="button" ${BTN} data-resume>KEEP GOING &gt;</button></div>
         <div class="overlay top" data-ph="over" hidden><div class="vt" style="font-size:36px;line-height:1">PROJECT OVER BUDGET.</div><div>You accepted <span data-over-score>0</span> unscoped requests. This is why every project starts with an audit.</div>
@@ -601,6 +602,24 @@ function game(ctx) {
       else if (b.dataset.dir) { const [dx, dy] = b.dataset.dir.split(',').map(Number); turn(dx, dy); }
       else if (b.hasAttribute('data-claim')) { ctx.setScope(`Scope Creep score: ${g.score} — claiming the free 20-minute systems roast`); ctx.openWin('contact'); }
     });
+    // swipe to steer (phones and tablets): turns as soon as the finger has moved far enough
+    let sw = null;
+    ui.boardEl.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' || e.target.closest('button, input, form, a')) return;
+      sw = { x: e.clientX, y: e.clientY, moved: false };
+    });
+    ui.boardEl.addEventListener('pointermove', (e) => {
+      if (!sw || g.phase === 'over' || g.phase === 'won') return;
+      const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 22) return;
+      if (Math.abs(dx) > Math.abs(dy)) turn(dx > 0 ? 1 : -1, 0); else turn(0, dy > 0 ? 1 : -1);
+      sw = { x: e.clientX, y: e.clientY, moved: true };
+    });
+    ui.boardEl.addEventListener('pointerup', () => {
+      if (sw && !sw.moved && g.phase === 'paused') resume();
+      sw = null;
+    });
+    ui.boardEl.addEventListener('pointercancel', () => { sw = null; });
     ui.saveForm.addEventListener('submit', save);
     draw(); hud(); loadBoard();
   }

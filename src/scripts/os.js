@@ -40,9 +40,10 @@ export function initOS() {
   const soundBtn = $('#sound');
   soundBtn.addEventListener('click', () => {
     state.sound = !state.sound;
-    soundBtn.textContent = state.sound ? 'Sound on' : 'Sound off';
+    $('.lbl', soundBtn).textContent = state.sound ? 'Sound on' : 'Sound off';
+    $('.on', soundBtn).style.display = state.sound ? '' : 'none';
+    $('.off', soundBtn).style.display = state.sound ? 'none' : '';
     soundBtn.setAttribute('aria-pressed', String(state.sound));
-    if (!state.sound) ach && ach.unlock('silent');
   });
 
   // ---------- windows ----------
@@ -127,7 +128,6 @@ export function initOS() {
   let wasOff = false;
   function powerOn() {
     beep(440, 0.12);
-    ach && ach.unlock('boot');
     if (wasOff) ach && ach.unlock('reboot');
     state.phase = 'booting';
     off.hidden = true; boot.hidden = false;

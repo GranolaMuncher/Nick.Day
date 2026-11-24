@@ -74,6 +74,13 @@ summary:hover { color: var(--amber); }
 .toast .td { display: block; font-size: 13px; }
 .toast.legendary { background: var(--amber); color: var(--bg); text-shadow: none; animation: legend 1s ease-in-out 3; }
 .toast.legendary .tt, .toast.legendary .tn { color: var(--bg); }
+.toast.compact { width: 100%; padding: 8px 12px; gap: 10px; border-width: 1px; box-shadow: none; }
+.toast.compact .tn { font-size: 20px; flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toast.compact .tt { font-size: 13px; color: var(--light); }
+.taskbar .trophies { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+.taskbar .trophies.ping { animation: ping .8s ease-out; }
+@keyframes ping { 0% { background: var(--amber); color: var(--bg); } 100% { background: transparent; } }
+#sound { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
 @keyframes legend { 50% { box-shadow: 0 0 28px rgba(255,181,71,.8); } }
 .ach { display: flex; gap: 12px; align-items: flex-start; padding: 10px 12px; border: 1px dashed var(--deep); }
 .ach .trophy { color: var(--deep); flex: 0 0 auto; }
@@ -126,9 +133,9 @@ summary:hover { color: var(--amber); }
 .term { padding: 14px 16px; height: 360px; overflow: auto; font-size: 14px; line-height: 1.5; background: var(--bg); cursor: text; }
 .term .ln { white-space: pre-wrap; overflow-wrap: anywhere; }
 .term input { flex: 1 1 auto; min-width: 0; background: transparent; border: 0; outline: none; color: var(--amber); font: inherit; caret-color: var(--amber); }
-.board { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1; margin: 0 auto; border: 2px solid var(--amber); background: var(--bg); outline: none; }
+.board { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1; margin: 0 auto; border: 2px solid var(--amber); background: var(--bg); outline: none; touch-action: none; user-select: none; -webkit-user-select: none; }
 .board canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
-.overlay { position: absolute; inset: 0; background: rgba(14,9,4,.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 18px; text-align: center; overflow: auto; }
+.overlay { touch-action: pan-y; position: absolute; inset: 0; background: rgba(14,9,4,.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 18px; text-align: center; overflow: auto; }
 .overlay.top { justify-content: flex-start; }
 .overlay[hidden] { display: none; }
 .dpad { display: grid; grid-template-columns: repeat(3, 48px); gap: 6px; justify-content: center; margin-top: 6px; }
@@ -154,13 +161,22 @@ summary:hover { color: var(--amber); }
   .grid2 { grid-template-columns: minmax(0, 1fr); }
   .plain h1 { font-size: 40px; }
   .taskbar .pill, .taskbar .uptime { display: none; }
-  .toasts { left: 8px; right: 8px; bottom: 60px; }
-  .toast { width: 100%; max-width: none; }
+  .toasts { left: 8px; right: 8px; top: 8px; bottom: auto; }
+  /* Scope Creep: board, score and arrows all on one screen */
+  .board { width: min(100%, max(220px, calc(100dvh - 430px))); }
+  .dpad { grid-template-columns: repeat(3, 44px); gap: 4px; }
+  .overlay { padding: 10px; gap: 6px; font-size: 12px; line-height: 1.4; justify-content: safe center; }
+  .overlay .vt { font-size: 28px !important; }
+  .overlay .btn { min-height: 38px; }
+  .dpad .btn { min-height: 40px; padding: 0; }
+  .toast { width: 100%; max-width: none; transform: translateY(-24px); }
+  .toast.in { transform: none; }
   .about-head { grid-template-columns: 112px minmax(0, 1fr); grid-template-areas: "img h" "p p"; grid-template-rows: auto auto; gap: 14px 14px; align-items: center; }
   .about-head img { width: 112px; height: 140px; }
   #shutdown { padding: 0 10px; }
   .taskbar .tbtn { padding: 0 8px; }
   #shutdown .vt { display: none; }
+  #sound .lbl { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .toast { transition: none; } .toast.legendary { animation: none; }
