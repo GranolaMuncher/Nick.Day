@@ -82,7 +82,7 @@ function diagnose(ctx) {
           t = setInterval(() => {
             st.progress = Math.min(100, st.progress + 4);
             if (st.progress % 16 === 0) ctx.beep(1200, 0.02);
-            if (st.progress >= 100) { clearInterval(t); ctx.beep(520, 0.2); st.phase = 'report'; }
+            if (st.progress >= 100) { clearInterval(t); ctx.beep(520, 0.2); st.phase = 'report'; ctx.ach('diagnose'); }
             render();
           }, 90);
         }
@@ -126,7 +126,7 @@ function calc(ctx) {
       <div class="grid2" style="margin-top:12px"><div class="card" style="padding:12px"><div class="dim" style="font-size:12px">IF EVEN HALF IS AUTOMATED</div><div class="vt" style="font-size:32px" data-saved></div></div>
       <div class="card" style="padding:12px"><div class="dim" style="font-size:12px">A SYSTEMS BUILD FROM $14,000 PAYS BACK IN</div><div class="vt" style="font-size:32px" data-payback></div></div></div>
       <p class="dim" style="margin:12px 0 0;font-size:12px">Rough math (48 working weeks), not a promise. Want the real numbers? <a href="/contact" data-open="contact">Book an audit.</a></p>`;
-    r.addEventListener('input', (e) => { const k = e.target.dataset.key; if (!k) return; v[k] = Number(e.target.value); update(); });
+    r.addEventListener('input', (e) => { const k = e.target.dataset.key; if (!k) return; v[k] = Number(e.target.value); update(); ctx.ach('calc'); });
     update();
   }
   return { open: render };
@@ -209,7 +209,7 @@ function defrag(ctx) {
     t = setInterval(() => {
       for (let n = 0; n < 2 && pos < blocks.length; n++, pos++) { blocks[pos] = tgt[pos]; cells[pos].style.background = COLORS[tgt[pos]]; }
       if (pos % 24 === 0) ctx.beep(300 + pos * 3, 0.02);
-      if (pos >= blocks.length) { clearInterval(t); running = false; done = true; ctx.beep(880, 0.15); }
+      if (pos >= blocks.length) { clearInterval(t); running = false; done = true; ctx.beep(880, 0.15); ctx.ach('defrag'); }
       status();
     }, 22);
   }
@@ -237,7 +237,7 @@ function terminal(ctx) {
   const el = () => ctx.body('terminal');
   let out, input, scroller;
   const PRICES = ['Systems Audit .................... from $2,500', 'Launch-in-a-Box .................. from $9,000', 'SaaS De-Bloat & Systems Rebuild .. from $14,000', 'Business systems, end to end ..... from $14,000', 'AI agents & automation ........... from $8,500', 'Websites, e-commerce & POD ....... from $9,000', 'Growth: SEO & ads ................ from $3,000/mo', 'Fractional operations partner .... from $6,000/mo'];
-  const OPEN = { services: 'services', work: 'work', experience: 'experience', about: 'about', contact: 'contact', tools: 'tools', diagnose: 'diagnose', 'diagnose.exe': 'diagnose', calc: 'calc', chaos_calc: 'calc', 'chaos_calc.exe': 'calc', taskmgr: 'taskmgr', 'taskmgr.exe': 'taskmgr', defrag: 'defrag', 'defrag.exe': 'defrag', recycle: 'recycle', bin: 'recycle', estimate: 'estimate', 'estimate.exe': 'estimate', inbox: 'inbox', 'inbox.exe': 'inbox' };
+  const OPEN = { services: 'services', work: 'work', experience: 'experience', about: 'about', contact: 'contact', tools: 'tools', diagnose: 'diagnose', 'diagnose.exe': 'diagnose', calc: 'calc', chaos_calc: 'calc', 'chaos_calc.exe': 'calc', taskmgr: 'taskmgr', 'taskmgr.exe': 'taskmgr', defrag: 'defrag', 'defrag.exe': 'defrag', recycle: 'recycle', bin: 'recycle', estimate: 'estimate', 'estimate.exe': 'estimate', inbox: 'inbox', 'inbox.exe': 'inbox', achievements: 'achievements', 'achievements.exe': 'achievements' };
   const later = (k, ms = 200) => setTimeout(() => ctx.openWin(k), ms);
   function print(lines) {
     lines.forEach((l) => {
@@ -254,9 +254,9 @@ function terminal(ctx) {
     const cmd = raw.trim(), lc = cmd.toLowerCase();
     let o = [];
     if (lc === '') o = [];
-    else if (lc === 'help') o = ['Commands:', '  whoami       who runs this machine', '  ls           list the desktop', '  open <name>  open a window', '  services     what I build', '  skills       everything I do', '  stream       where I go live', '  prices       starting prices', '  diagnose     systems health scan', '  estimate     ballpark a project', '  specs        machine specs', '  hire nick    start a project', '  date, uptime, echo, clear, exit', '  ...and a few hidden ones.', 'Try: open work'];
+    else if (lc === 'help') o = ['Commands:', '  whoami       who runs this machine', '  ls           list the desktop', '  open <name>  open a window', '  services     what I build', '  skills       everything I do', '  stream       where I go live', '  prices       starting prices', '  diagnose     systems health scan', '  estimate     ballpark a project', '  specs        machine specs', '  hire nick    start a project', '  history      past commands', '  achievements trophy case', '  date, uptime, echo, clear, exit', '  ...and a few hidden ones.', 'Try: open work'];
     else if (lc === 'whoami') o = ['visitor', 'But this machine belongs to Nick Day: I build the systems that let businesses grow.', 'SF Bay Area. Operations, automation, websites and custom tools.'];
-    else if (lc === 'ls' || lc === 'dir' || lc === 'ls -la') o = ['services/  work/  experience/  about/  contact/  tools/  terminal  Recycle Bin', 'tools/', '  diagnose.exe  chaos_calc.exe', '  taskmgr.exe   defrag.exe', '  estimate.exe  inbox.exe'];
+    else if (lc === 'ls' || lc === 'dir' || lc === 'ls -la') o = ['services/  work/  experience/  about/  contact/  tools/  terminal  Recycle Bin', 'tools/', '  diagnose.exe  chaos_calc.exe', '  taskmgr.exe   defrag.exe', '  estimate.exe  inbox.exe', '  achievements.exe'];
     else if (/^(open |cd |\.\/)/.test(lc)) {
       const name = lc.replace(/^open\s+|^cd\s+|^\.\//, '').replace(/^\.\//, '').replace(/\/$/, '');
       if (OPEN[name]) { o = [`opening ${name} ...`]; later(OPEN[name]); } else o = [`no such file: ${name}. Try "ls".`];
@@ -271,6 +271,8 @@ function terminal(ctx) {
     else if (lc === 'inbox' || lc === 'mail') { o = ['opening inbox.exe ...']; later('inbox'); }
     else if (['play', 'snake', 'scopecreep', 'scope creep', 'game'].includes(lc)) { o = ['You found it.', 'launching scopecreep.exe ...']; later('game', 250); }
     else if (['hire', 'hire nick', 'hire me'].includes(lc)) { o = ['Excellent choice.', 'opening ./contact ...']; later('contact', 300); }
+    else if (lc === 'history') { o = ['    1  ls', '    2  open services', '    3  hi', '    4  sudo make me a sandwich', '    5  sudo roast coffee', '    6  play dnb', '    7  black belt', '    8  rm -rf /', '    9  play', '   10  hire nick', '   11  history']; ctx.ach('history'); }
+    else if (['achievements', 'trophies', 'achievements.exe'].includes(lc)) { o = ['opening achievements.exe ...']; later('achievements'); }
     else if (lc === 'date') o = [new Date().toString()];
     else if (lc === 'uptime') { const s = ctx.uptime(); o = [`up ${Math.floor(s / 60)} min ${s % 60} sec, 1 visitor`]; }
     else if (lc.startsWith('echo ')) o = [cmd.slice(5)];
@@ -284,6 +286,14 @@ function terminal(ctx) {
     else if (['hello', 'hi', 'hey'].includes(lc)) o = ['Hey. Type "help", or skip ahead with "hire nick".'];
     else if (lc === 'coffee') o = ['Try: sudo roast coffee'];
     else o = [`command not found: ${cmd}`, 'Type "help" for a list of commands.'];
+    // achievements
+    const found = lc && !String(o[0] || '').startsWith('command not found') && !String(o[0] || '').startsWith('no such file');
+    if (found) ctx.cmd(/^(open|cd|echo)\s/.test(lc) ? lc.split(/\s+/)[0] : lc.replace(/^\.\/.*/, 'open'));
+    if (['hello', 'hi', 'hey'].includes(lc)) ctx.ach('hello');
+    if (['black belt', 'hwa rang do', 'kick'].includes(lc)) ctx.ach('belt');
+    if (lc === 'sudo roast coffee' || lc === 'roast coffee') ctx.ach('coffee');
+    else if (lc.includes('rm -rf')) ctx.ach('rmrf');
+    else if (lc === 'sudo' || lc.startsWith('sudo ')) ctx.ach('sudo');
     ctx.beep(900, 0.02);
     print([`visitor@nick.os:~$ ${cmd}`].concat(o));
   }
@@ -339,6 +349,7 @@ function estimate(ctx) {
   function update() {
     const r = el(), o = calcOut();
     r.querySelector('[data-range]').textContent = o.range;
+    if (o.picked.length) ctx.ach('estimate');
     r.querySelector('[data-monthly]').textContent = o.monthly;
     const n = r.querySelector('[data-notes]'); n.textContent = '';
     o.notes.forEach((t) => { const p = document.createElement('p'); p.className = 'dim'; p.style.cssText = 'margin:8px 0 0;font-size:13px'; p.textContent = '> ' + t; n.appendChild(p); });
@@ -417,13 +428,14 @@ function recycle(ctx) {
          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><button type="button" ${BTN} data-open="contact">Clean up my stack &gt;</button><button type="button" ${BTN2} data-restore>Restore</button></div>`
       : `<p class="light" style="margin:0 0 12px">Things that get thrown out of messy setups. Typical finds, not one client’s files.</p>
          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">${BIN.map(([n, d]) => `<li style="display:flex;gap:10px">${fileIcon}<div><b>${esc(n)}</b><br><span class="dim">${esc(d)}</span></div></li>`).join('')}</ul>
+         <div style="display:flex;gap:10px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--deep)">${fileIcon}<div><b>notes_to_self.txt</b><br><span class="dim">todo: hide the game better. visitors should never type "play" in the terminal. also clear my terminal history.</span></div></div>
          <button type="button" ${BTN} data-empty style="margin-top:14px">Empty Recycle Bin</button>`;
   }
   function bind() {
     const r = el(); if (!r || r.dataset.bound) return; r.dataset.bound = '1';
     r.addEventListener('click', (e) => {
       const b = e.target.closest('button'); if (!b) return;
-      if (b.hasAttribute('data-empty')) { ctx.beep(150, 0.3); empty = true; render(); }
+      if (b.hasAttribute('data-empty')) { ctx.beep(150, 0.3); empty = true; render(); ctx.ach('bin'); }
       else if (b.hasAttribute('data-restore')) { empty = false; render(); }
     });
   }
@@ -503,6 +515,7 @@ function game(ctx) {
     if (ate) {
       g.score += 1; g.req = (g.req + 1) % REQUESTS.length; g.food = food(g.snake);
       ctx.beep(660 + (g.score % 8) * 40, 0.05);
+      if (g.score === TARGET) ctx.ach('scope');
       if (g.score === TARGET && !g.won) { clearInterval(timer); g.won = true; g.phase = 'won'; ctx.beep(880, 0.3); draw(); hud(); return; }
       speed();
     }

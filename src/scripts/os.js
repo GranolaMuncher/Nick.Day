@@ -1,6 +1,7 @@
 // NICK.OS — desktop shell: boot, windows, taskbar, sound, screensaver.
 import { initContact } from './contact.js';
 import { createApps } from './apps.js';
+import { createAchievements } from './achievements.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -74,6 +75,7 @@ export function initOS() {
     el.hidden = false;
     focusWin(k);
     apps[k] && apps[k].open && apps[k].open();
+    ach && ach.opened(k);
   }
   function closeWin(k) {
     const el = wins[k]; if (!el) return;
@@ -119,9 +121,13 @@ export function initOS() {
     state.secs = 0; state.lastAct = Date.now();
     clearInterval(clockT);
     clockT = setInterval(tick, 1000);
+    ach && ach.visit();
   }
+  let wasOff = false;
   function powerOn() {
     beep(440, 0.12);
+    ach && ach.unlock('boot');
+    if (wasOff) ach && ach.unlock('reboot');
     state.phase = 'booting';
     off.hidden = true; boot.hidden = false;
     const lines = $('#bootlines'); lines.textContent = '';
@@ -140,7 +146,7 @@ export function initOS() {
     Object.keys(wins).forEach((k) => { if (!wins[k].hidden) { wins[k].hidden = true; apps[k] && apps[k].close && apps[k].close(); } });
     state.active = null; renderTasks();
     desk.hidden = true; bar.hidden = true; boot.hidden = true; off.hidden = false;
-    state.phase = 'off';
+    state.phase = 'off'; wasOff = true;
     history.replaceState(null, '', location.pathname);
   }
   $('#power').addEventListener('click', powerOn);
@@ -180,17 +186,23 @@ export function initOS() {
     const w = document.createElement('div'); w.className = 'dim'; w.style.cssText = 'position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:13px'; w.textContent = 'Move the mouse to wake';
     saver.appendChild(w);
     saver.hidden = false;
+    ach && ach.unlock('afk');
   }
 
   // ---------- apps ----------
   const contact = initContact(wins.contact);
+  let ach = null;
   const ctx = {
     beep, openWin, closeWin,
     setScope: (text) => { contact && contact.setScope(text); },
     uptime: () => state.secs,
     body: (k) => wins[k] && $('[data-app]', wins[k]),
+    ach: (id) => ach && ach.unlock(id),
+    cmd: (name) => ach && ach.command(name),
   };
+  ach = createAchievements(ctx);
   const apps = createApps(ctx);
+  apps.achievements = { open: ach.open };
 
   // deep links: nick.day/#work opens that window straight away
   const hash = location.hash.replace('#', '');
