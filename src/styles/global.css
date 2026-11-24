@@ -78,7 +78,9 @@ summary:hover { color: var(--amber); }
 .body::-webkit-scrollbar-thumb { background: var(--dim); }
 
 .taskbar { position: absolute; left: 0; right: 0; bottom: 0; height: 52px; border-top: 2px solid var(--amber); background: var(--panel); display: flex; align-items: center; gap: 8px; padding: 0 8px; z-index: 5000; }
-.taskbar .tasks { flex: 1 1 auto; min-width: 0; display: flex; gap: 6px; overflow-x: auto; }
+.taskbar .tasks { flex: 1 1 auto; min-width: 0; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.taskbar .tasks::-webkit-scrollbar { display: none; }
+.taskbar .tasks .tbtn { flex: 0 1 auto; min-width: 72px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
 .taskbar .pill { font-size: 13px; padding: 0 10px; border: 1px solid var(--dim); height: 40px; display: flex; align-items: center; white-space: nowrap; }
 
 /* ---------- screensaver ---------- */
@@ -126,6 +128,9 @@ summary:hover { color: var(--amber); }
   .grid2 { grid-template-columns: minmax(0, 1fr); }
   .plain h1 { font-size: 40px; }
   .taskbar .pill, .taskbar .uptime { display: none; }
+  #shutdown { padding: 0 10px; }
+  .taskbar .tbtn { padding: 0 8px; }
+  #shutdown .vt { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .flick, .blink, .starlayer, .star, .drift { animation: none; }
