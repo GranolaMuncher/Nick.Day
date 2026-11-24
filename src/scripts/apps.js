@@ -451,6 +451,7 @@ function game(ctx) {
   const el = () => ctx.body('game');
   let g = null, timer = null, nextDir = null, best = 0, board = [], shared = false, cvs, c2d, ui = {};
   try { best = Number(localStorage.getItem('nickos-best')) || 0; } catch (e) { /* storage off */ }
+  const touch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
   const fresh = () => ({ phase: 'ready', snake: [[10, 10], [9, 10], [8, 10]], dir: [1, 0], food: [15, 10], score: 0, req: 0, won: false, saved: false });
   function food(snake) {
@@ -487,6 +488,7 @@ function game(ctx) {
     g = fresh(); g.phase = 'playing'; g.food = food(g.snake); nextDir = null;
     ui.savedMsg.hidden = true;
     ctx.beep(520, 0.08); speed(); draw(); hud();
+    if (touch) { const sc = el() && el().closest('.body'); if (sc) sc.scrollTop = 0; }
     setTimeout(() => ui.boardEl.focus({ preventScroll: true }), 30);
   }
   function pause() {
@@ -569,7 +571,7 @@ function game(ctx) {
     r.innerHTML = `<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:8px"><span class="vt" style="font-size:24px">REQUESTS: <span data-score>0</span></span><span class="vt" style="font-size:24px">BEST: <span data-best>0</span></span></div>
       <div class="board" tabindex="0" role="application" aria-label="Scope Creep game board. Use the arrow keys or WASD to move, space to pause.">
         <canvas width="400" height="400"></canvas>
-        <div class="overlay" data-ph="ready"><div class="vt" style="font-size:44px;line-height:1">SCOPE CREEP</div><div>Every request you eat makes the project longer. Hit a wall or yourself and the project goes over budget.</div><div class="dim" style="font-size:13px">Arrow keys or WASD to move · Space to pause · Reach ${TARGET} for a secret</div><button type="button" ${BTN} data-start>START &gt;</button></div>
+        <div class="overlay" data-ph="ready"><div class="vt" style="font-size:44px;line-height:1">SCOPE CREEP</div><div>Every request you eat makes the project longer. Hit a wall or yourself and the project goes over budget.</div><div class="dim" style="font-size:13px">${touch ? 'Swipe on the board or use the arrows below' : 'Arrow keys or WASD to move · Space to pause'} · Reach ${TARGET} for a secret</div><button type="button" ${BTN} data-start>START &gt;</button></div>
         <div class="overlay" data-ph="paused" hidden><div class="vt" style="font-size:40px">PAUSED</div><button type="button" ${BTN} data-resume>RESUME</button></div>
         <div class="overlay top" data-ph="won" hidden><div class="vt" style="font-size:38px;line-height:1">SCOPE MASTERED</div><div style="text-align:left;font-size:13px;border-left:2px solid var(--amber);padding-left:10px">You handled ${TARGET} requests without blowing the budget. Most projects die at five. A message from Nick: if you have the patience for this, you have the patience to fix your systems. Let’s do it properly, with a real scope.</div>${reward}<button type="button" ${BTN} data-resume>KEEP GOING &gt;</button></div>
         <div class="overlay top" data-ph="over" hidden><div class="vt" style="font-size:36px;line-height:1">PROJECT OVER BUDGET.</div><div>You accepted <span data-over-score>0</span> unscoped requests. This is why every project starts with an audit.</div>
@@ -601,6 +603,24 @@ function game(ctx) {
       else if (b.dataset.dir) { const [dx, dy] = b.dataset.dir.split(',').map(Number); turn(dx, dy); }
       else if (b.hasAttribute('data-claim')) { ctx.setScope(`Scope Creep score: ${g.score} — claiming the free 20-minute systems roast`); ctx.openWin('contact'); }
     });
+    // swipe to steer (phones and tablets): turns as soon as the finger has moved far enough
+    let sw = null;
+    ui.boardEl.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' || e.target.closest('button, input, form, a')) return;
+      sw = { x: e.clientX, y: e.clientY, moved: false };
+    });
+    ui.boardEl.addEventListener('pointermove', (e) => {
+      if (!sw || g.phase === 'over' || g.phase === 'won') return;
+      const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 22) return;
+      if (Math.abs(dx) > Math.abs(dy)) turn(dx > 0 ? 1 : -1, 0); else turn(0, dy > 0 ? 1 : -1);
+      sw = { x: e.clientX, y: e.clientY, moved: true };
+    });
+    ui.boardEl.addEventListener('pointerup', () => {
+      if (sw && !sw.moved && g.phase === 'paused') resume();
+      sw = null;
+    });
+    ui.boardEl.addEventListener('pointercancel', () => { sw = null; });
     ui.saveForm.addEventListener('submit', save);
     draw(); hud(); loadBoard();
   }
