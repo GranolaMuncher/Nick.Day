@@ -12,7 +12,7 @@
     "CONTACT_TO": "nicholastday@gmail.com",
     "CONTACT_FROM": "NICK.OS <hello@nick.day>"
   },
-  // High-score board: add the KV namespace once it exists, e.g.
-  // "kv_namespaces": [{ "binding": "SCORES", "id": "<id from: npx wrangler kv namespace create nickday-scores>" }],
+  // Scope Creep high-score board (namespace "nickday-scores")
+  "kv_namespaces": [{ "binding": "SCORES", "id": "20faa962d17f44529aeb15997dd967af" }],
   "observability": { "enabled": true }
 }
