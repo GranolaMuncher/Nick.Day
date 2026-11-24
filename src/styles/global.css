@@ -121,7 +121,10 @@ summary:hover { color: var(--amber); }
 .plain footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--dim); font-size: 13px; color: var(--dim); }
 
 @media (max-width: 760px) {
-  .win { left: 8px !important; top: 64px !important; width: calc(100% - 16px) !important; }
+  .win { left: 8px !important; top: 64px !important; width: calc(100% - 16px) !important; max-height: calc(100% - 72px); display: flex; flex-direction: column; }
+  .win .bar { flex: 0 0 auto; }
+  .win .body { flex: 0 1 auto; min-height: 0; max-height: none; }
+  .win .term { flex: 0 1 360px; height: auto; min-height: 0; }
   .icons { display: flex !important; flex-wrap: wrap; right: 8px; }
   .rbin { top: auto !important; bottom: 8px; right: 8px !important; }
   .hero { display: none; }
