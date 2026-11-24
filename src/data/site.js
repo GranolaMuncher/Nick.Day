@@ -12,7 +12,7 @@ export const site = {
   // Taskbar counter. 0 shows "Fully booked this quarter".
   newClientSpotsThisQuarter: 2,
   // Seconds of no activity before the screensaver starts.
-  idleSeconds: 30,
+  idleSeconds: 60,
   replyTime: '1–2 days',
   booking: 'available now',
 };

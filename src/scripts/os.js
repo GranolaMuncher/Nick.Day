@@ -21,7 +21,7 @@ const BOOT = [
 export function initOS() {
   const os = $('#os');
   const off = $('#off'), boot = $('#boot'), desk = $('#desktop'), bar = $('#taskbar'), saver = $('#saver');
-  const idleMs = (Number(os.dataset.idle) || 30) * 1000;
+  const idleMs = (Number(os.dataset.idle) || 60) * 1000;
   const state = { phase: 'off', sound: true, secs: 0, topZ: 10, active: null, lastAct: Date.now(), drag: null };
   let ac = null, clockT = null, bootT = null;
 
@@ -175,12 +175,10 @@ export function initOS() {
   $('#shutdown').addEventListener('click', powerOff);
 
   // ---------- clock + screensaver ----------
-  const uptime = $('#uptime');
   // Phones and tablets: no screensaver. Reading there is scrolling, and a saver just gets in the way.
   const touchOnly = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   function tick() {
     state.secs += 1;
-    uptime.textContent = String(Math.floor(state.secs / 60)).padStart(2, '0') + ':' + String(state.secs % 60).padStart(2, '0');
     if (!touchOnly && saver.hidden && !state.drag && Date.now() - state.lastAct > idleMs && !(apps.game && apps.game.playing())) startSaver();
   }
   function activity() {
