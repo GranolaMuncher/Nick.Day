@@ -13,7 +13,7 @@ const BOOT = [
   'Loading: web_stack.drv ........ Astro / Stripe / Cloudflare',
   'Loading: agents.exe ........... ready',
   'Loading: growth.drv ........... SEO / ads',
-  'Mounting desktop ............. 13 items',
+  'Mounting desktop ............. 8 items',
   'Welcome, visitor.',
 ];
 
@@ -148,16 +148,19 @@ export function initOS() {
 
   // ---------- clock + screensaver ----------
   const uptime = $('#uptime');
+  // Phones and tablets: no screensaver. Reading there is scrolling, and a saver just gets in the way.
+  const touchOnly = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   function tick() {
     state.secs += 1;
     uptime.textContent = String(Math.floor(state.secs / 60)).padStart(2, '0') + ':' + String(state.secs % 60).padStart(2, '0');
-    if (saver.hidden && !state.drag && Date.now() - state.lastAct > idleMs && !(apps.game && apps.game.playing())) startSaver();
+    if (!touchOnly && saver.hidden && !state.drag && Date.now() - state.lastAct > idleMs && !(apps.game && apps.game.playing())) startSaver();
   }
   function activity() {
     state.lastAct = Date.now();
     if (!saver.hidden) { saver.hidden = true; saver.textContent = ''; }
   }
   ['pointerdown', 'keydown', 'wheel', 'input', 'touchstart'].forEach((ev) => window.addEventListener(ev, activity, { passive: true }));
+  document.addEventListener('scroll', activity, { passive: true, capture: true });
   function startSaver() {
     const layer = (seed, cls) => {
       let r = seed; const rnd = () => { r = (r * 9301 + 49297) % 233280; return r / 233280; };

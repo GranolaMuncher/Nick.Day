@@ -237,7 +237,7 @@ function terminal(ctx) {
   const el = () => ctx.body('terminal');
   let out, input, scroller;
   const PRICES = ['Systems Audit .................... from $2,500', 'Launch-in-a-Box .................. from $9,000', 'SaaS De-Bloat & Systems Rebuild .. from $14,000', 'Business systems, end to end ..... from $14,000', 'AI agents & automation ........... from $8,500', 'Websites, e-commerce & POD ....... from $9,000', 'Growth: SEO & ads ................ from $3,000/mo', 'Fractional operations partner .... from $6,000/mo'];
-  const OPEN = { services: 'services', work: 'work', experience: 'experience', about: 'about', contact: 'contact', diagnose: 'diagnose', 'diagnose.exe': 'diagnose', calc: 'calc', chaos_calc: 'calc', 'chaos_calc.exe': 'calc', taskmgr: 'taskmgr', 'taskmgr.exe': 'taskmgr', defrag: 'defrag', 'defrag.exe': 'defrag', recycle: 'recycle', bin: 'recycle', estimate: 'estimate', 'estimate.exe': 'estimate', inbox: 'inbox', 'inbox.exe': 'inbox' };
+  const OPEN = { services: 'services', work: 'work', experience: 'experience', about: 'about', contact: 'contact', tools: 'tools', diagnose: 'diagnose', 'diagnose.exe': 'diagnose', calc: 'calc', chaos_calc: 'calc', 'chaos_calc.exe': 'calc', taskmgr: 'taskmgr', 'taskmgr.exe': 'taskmgr', defrag: 'defrag', 'defrag.exe': 'defrag', recycle: 'recycle', bin: 'recycle', estimate: 'estimate', 'estimate.exe': 'estimate', inbox: 'inbox', 'inbox.exe': 'inbox' };
   const later = (k, ms = 200) => setTimeout(() => ctx.openWin(k), ms);
   function print(lines) {
     lines.forEach((l) => { const d = document.createElement('div'); d.className = 'ln'; d.textContent = l; out.appendChild(d); });
@@ -250,7 +250,7 @@ function terminal(ctx) {
     if (lc === '') o = [];
     else if (lc === 'help') o = ['Commands:', '  whoami          who runs this machine', '  ls              list the desktop', '  open <name>     open a window (e.g. open work)', '  services        what I build', '  skills          everything I do', '  stream          where I go live', '  prices          starting prices', '  diagnose        run a systems health scan', '  estimate        ballpark a project', '  specs           machine specs', '  hire nick       start a project', '  date, uptime, echo <text>, clear, exit', '  ...and a few hidden ones.'];
     else if (lc === 'whoami') o = ['visitor', 'But this machine belongs to Nick Day: I build the systems that let businesses grow.', 'SF Bay Area. Operations, automation, websites and custom tools.'];
-    else if (lc === 'ls' || lc === 'dir' || lc === 'ls -la') o = ['services/  work/  experience/  about/  contact/', 'diagnose.exe  chaos_calc.exe  taskmgr.exe  defrag.exe  estimate.exe  inbox.exe  Recycle Bin'];
+    else if (lc === 'ls' || lc === 'dir' || lc === 'ls -la') o = ['services/  work/  experience/  about/  contact/  tools/  terminal  Recycle Bin', 'tools/: diagnose.exe  chaos_calc.exe  taskmgr.exe  defrag.exe  estimate.exe  inbox.exe'];
     else if (/^(open |cd |\.\/)/.test(lc)) {
       const name = lc.replace(/^open\s+|^cd\s+|^\.\//, '').replace(/^\.\//, '').replace(/\/$/, '');
       if (OPEN[name]) { o = [`opening ${name} ...`]; later(OPEN[name]); } else o = [`no such file: ${name}. Try "ls".`];
