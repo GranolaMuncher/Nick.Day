@@ -84,6 +84,10 @@ summary:hover { color: var(--amber); }
 .ach.on.gold { border-color: var(--amber); }
 .ach.on.legendary { border: 2px solid var(--amber); background: rgba(255,181,71,.08); }
 .ach.legendary .tier { color: var(--light); }
+.about-head { display: grid; grid-template-columns: 160px minmax(0, 1fr); grid-template-areas: "img h" "img p"; grid-template-rows: auto 1fr; gap: 8px 16px; }
+.about-head img { grid-area: img; width: 160px; height: 200px; object-fit: cover; border: 2px solid #FFB547; box-shadow: 4px 4px 0 rgba(255,181,71,.15); }
+.about-head h2 { grid-area: h; margin: 0; font-size: 40px; font-weight: 400; line-height: 1; }
+.about-head p { grid-area: p; margin: 0; }
 .rbin { position: absolute; top: 24px; right: 24px; }
 
 .win { position: absolute; background: var(--panel); border: 2px solid var(--amber); box-shadow: 6px 6px 0 rgba(255,181,71,.15); max-width: calc(100vw - 16px); }
@@ -152,6 +156,8 @@ summary:hover { color: var(--amber); }
   .taskbar .pill, .taskbar .uptime { display: none; }
   .toasts { left: 8px; right: 8px; bottom: 60px; }
   .toast { width: 100%; max-width: none; }
+  .about-head { grid-template-columns: 112px minmax(0, 1fr); grid-template-areas: "img h" "p p"; grid-template-rows: auto auto; gap: 14px 14px; align-items: center; }
+  .about-head img { width: 112px; height: 140px; }
   #shutdown { padding: 0 10px; }
   .taskbar .tbtn { padding: 0 8px; }
   #shutdown .vt { display: none; }
