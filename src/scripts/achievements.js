@@ -12,15 +12,11 @@ export const TIERS = {
 // hint = what a locked achievement shows. Keep hints nudging, not spoiling.
 export const ACH = [
   // exploring
-  { id: 'boot', name: 'Boot Sequence', tier: 'bronze', desc: 'Powered on NICK.OS.', hint: 'Press the button.' },
   { id: 'tour', name: 'Full Tour', tier: 'silver', desc: 'Opened every folder on the desktop.', hint: 'Open every ./folder.' },
   { id: 'toolbox', name: 'Toolbox', tier: 'silver', desc: 'Opened every tool in ./tools.', hint: 'Try every .exe in ./tools.' },
   { id: 'bin', name: 'Dumpster Diver', tier: 'bronze', desc: 'Emptied the Recycle Bin.', hint: 'Take out the trash.' },
   { id: 'reboot', name: 'Have You Tried…', tier: 'bronze', desc: 'Turned it off and on again.', hint: 'The oldest fix in IT.' },
   { id: 'night', name: 'Night Owl', tier: 'silver', desc: 'Visited between midnight and 4am.', hint: 'Come back very late.' },
-  { id: 'speedrun', name: 'Speedrun', tier: 'silver', desc: 'Opened every folder within 60 seconds of booting.', hint: 'Tour the desktop. Fast.' },
-  { id: 'plain', name: 'Plain Text Enjoyer', tier: 'bronze', desc: 'Read the site as plain pages.', hint: 'Not everyone wants a desktop.' },
-  { id: 'silent', name: 'Silent Mode', tier: 'bronze', desc: 'Turned the sound off.', hint: 'Too loud?' },
   { id: 'afk', name: 'AFK', tier: 'bronze', desc: 'Let the screensaver kick in.', hint: 'Walk away for a bit.', desktopOnly: true },
   // terminal
   { id: 'hello', name: 'Hello World', tier: 'bronze', desc: 'Said hi to the terminal.', hint: 'Be polite to the terminal.' },
@@ -28,28 +24,23 @@ export const ACH = [
   { id: 'sudo', name: 'Permission Denied', tier: 'silver', desc: 'Tried to get admin rights.', hint: 'Ask the terminal for admin rights.' },
   { id: 'rmrf', name: 'Nice Try', tier: 'silver', desc: 'Tried to delete everything.', hint: 'Try to wipe the machine.' },
   { id: 'coffee', name: 'Coffee Snob', tier: 'silver', desc: 'Roasted a batch with root access.', hint: 'The machine runs on coffee.' },
-  { id: 'history', name: 'Snoop', tier: 'bronze', desc: 'Read the last user’s command history.', hint: 'What did the last user type?' },
   { id: 'power', name: 'Power User', tier: 'gold', desc: 'Ran 10 different terminal commands.', hint: 'Get comfortable in the terminal.' },
   // hidden game
   { id: 'game', name: 'Scope Creep', tier: 'gold', desc: 'Found the hidden game.', hint: 'There’s a game in here somewhere.' },
   { id: 'highscore', name: 'High Scorer', tier: 'silver', desc: 'Saved a score to the high-score board.', hint: 'Leave your name on the board.' },
   { id: 'scope', name: 'Scope Mastered', tier: 'gold', desc: 'Handled 25 requests in Scope Creep.', hint: 'Get good at the hidden game.' },
   // working with Nick
-  { id: 'defrag', name: 'Defragmented', tier: 'bronze', desc: 'Ran a defrag to completion.', hint: 'Clean up a hard drive.' },
-  { id: 'calc', name: 'Do the Math', tier: 'bronze', desc: 'Priced out your busywork.', hint: 'Run some numbers.' },
   { id: 'taskkill', name: 'Task Killer', tier: 'bronze', desc: 'Ended every process in Task Manager.', hint: 'Shut down the busywork.' },
   { id: 'diagnose', name: 'Self-Aware', tier: 'silver', desc: 'Finished a systems health scan.', hint: 'Get your systems checked.' },
-  { id: 'estimate', name: 'Ballpark', tier: 'silver', desc: 'Got a ballpark for a project.', hint: 'Find out what a project costs.' },
   { id: 'scopesent', name: 'Scope Sent', tier: 'gold', desc: 'Sent an estimate’s scope to Nick.', hint: 'Price a project, then pass it on.' },
   { id: 'founding', name: 'Founding Member', tier: 'silver', desc: 'Asked about the founding-client offer.', hint: 'Check the inbox for an offer.' },
-  { id: 'hire', name: 'Excellent Choice', tier: 'silver', desc: 'Opened the contact window.', hint: 'Get in touch.' },
   { id: 'complete', name: 'Completionist', tier: 'gold', desc: 'Unlocked every other achievement.', hint: 'Catch them all.' },
   { id: 'sent', name: 'Final Boss', tier: 'legendary', desc: 'Sent Nick a message. The real game starts now.', hint: 'The final boss. Start a project.' },
 ];
 
 const FOLDERS = ['services', 'work', 'experience', 'about', 'contact'];
 const TOOLS = ['diagnose', 'calc', 'taskmgr', 'defrag', 'estimate', 'inbox'];
-const KEY = 'nickos-ach', SEEN = 'nickos-seen', VISIT = 'nickos-visit', PLAIN = 'nickos-plain';
+const KEY = 'nickos-ach', SEEN = 'nickos-seen', VISIT = 'nickos-visit';
 
 const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k) || 'null'); return v && typeof v === 'object' ? v : d; } catch (e) { return d; } };
 const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage off */ } };
@@ -60,7 +51,6 @@ export function createAchievements(ctx) {
   let got = load(KEY, {});
   const seen = load(SEEN, { open: [], cmds: [] });
   let stats = null; // { visitors, counts }
-  let bootAt = 0, run = [];
   const queue = []; let showing = false;
 
   // ---------- toast ----------
@@ -122,12 +112,9 @@ export function createAchievements(ctx) {
     render();
   }
   function opened(k) {
-    if (k === 'contact') unlock('hire');
     if (k === 'game') unlock('game');
     if (!seen.open.includes(k)) { seen.open.push(k); store(SEEN, seen); }
     if (FOLDERS.every((f) => seen.open.includes(f))) unlock('tour');
-    if (FOLDERS.includes(k) && !run.includes(k)) run.push(k);
-    if (bootAt && run.length === FOLDERS.length && Date.now() - bootAt <= 60000) unlock('speedrun');
     if (TOOLS.every((f) => seen.open.includes(f))) unlock('toolbox');
   }
   function command(name) {
@@ -135,8 +122,6 @@ export function createAchievements(ctx) {
     if (seen.cmds.length >= 10) unlock('power');
   }
   function visit() {
-    bootAt = Date.now(); run = [];
-    try { if (localStorage.getItem(PLAIN)) unlock('plain'); } catch (e) { /* */ }
     const h = new Date().getHours();
     if (h >= 0 && h < 4) unlock('night');
     // count each browser once as a visitor, so "found by X%" has a denominator

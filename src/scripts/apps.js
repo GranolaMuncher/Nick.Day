@@ -126,7 +126,7 @@ function calc(ctx) {
       <div class="grid2" style="margin-top:12px"><div class="card" style="padding:12px"><div class="dim" style="font-size:12px">IF EVEN HALF IS AUTOMATED</div><div class="vt" style="font-size:32px" data-saved></div></div>
       <div class="card" style="padding:12px"><div class="dim" style="font-size:12px">A SYSTEMS BUILD FROM $14,000 PAYS BACK IN</div><div class="vt" style="font-size:32px" data-payback></div></div></div>
       <p class="dim" style="margin:12px 0 0;font-size:12px">Rough math (48 working weeks), not a promise. Want the real numbers? <a href="/contact" data-open="contact">Book an audit.</a></p>`;
-    r.addEventListener('input', (e) => { const k = e.target.dataset.key; if (!k) return; v[k] = Number(e.target.value); update(); ctx.ach('calc'); });
+    r.addEventListener('input', (e) => { const k = e.target.dataset.key; if (!k) return; v[k] = Number(e.target.value); update(); });
     update();
   }
   return { open: render };
@@ -210,7 +210,7 @@ function defrag(ctx) {
     t = setInterval(() => {
       for (let n = 0; n < 2 && pos < blocks.length; n++, pos++) { blocks[pos] = tgt[pos]; cells[pos].style.background = COLORS[tgt[pos]]; }
       if (pos % 24 === 0) ctx.beep(300 + pos * 3, 0.02);
-      if (pos >= blocks.length) { clearInterval(t); running = false; done = true; ctx.beep(880, 0.15); ctx.ach('defrag'); }
+      if (pos >= blocks.length) { clearInterval(t); running = false; done = true; ctx.beep(880, 0.15); }
       status();
     }, 22);
   }
@@ -272,7 +272,7 @@ function terminal(ctx) {
     else if (lc === 'inbox' || lc === 'mail') { o = ['opening inbox.exe ...']; later('inbox'); }
     else if (['play', 'snake', 'scopecreep', 'scope creep', 'game'].includes(lc)) { o = ['You found it.', 'launching scopecreep.exe ...']; later('game', 250); }
     else if (['hire', 'hire nick', 'hire me'].includes(lc)) { o = ['Excellent choice.', 'opening ./contact ...']; later('contact', 300); }
-    else if (lc === 'history') { o = ['    1  ls', '    2  open services', '    3  hi', '    4  sudo make me a sandwich', '    5  sudo roast coffee', '    6  play dnb', '    7  black belt', '    8  rm -rf /', '    9  play', '   10  hire nick', '   11  history']; ctx.ach('history'); }
+    else if (lc === 'history') { o = ['    1  ls', '    2  open services', '    3  hi', '    4  sudo make me a sandwich', '    5  sudo roast coffee', '    6  play dnb', '    7  black belt', '    8  rm -rf /', '    9  play', '   10  hire nick', '   11  history']; }
     else if (['achievements', 'trophies', 'achievements.exe'].includes(lc)) { o = ['opening achievements.exe ...']; later('achievements'); }
     else if (lc === 'date') o = [new Date().toString()];
     else if (lc === 'uptime') { const s = ctx.uptime(); o = [`up ${Math.floor(s / 60)} min ${s % 60} sec, 1 visitor`]; }
@@ -350,7 +350,6 @@ function estimate(ctx) {
   function update() {
     const r = el(), o = calcOut();
     r.querySelector('[data-range]').textContent = o.range;
-    if (o.picked.length) ctx.ach('estimate');
     r.querySelector('[data-monthly]').textContent = o.monthly;
     const n = r.querySelector('[data-notes]'); n.textContent = '';
     o.notes.forEach((t) => { const p = document.createElement('p'); p.className = 'dim'; p.style.cssText = 'margin:8px 0 0;font-size:13px'; p.textContent = '> ' + t; n.appendChild(p); });
