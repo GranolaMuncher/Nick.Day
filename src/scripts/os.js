@@ -42,6 +42,7 @@ export function initOS() {
     state.sound = !state.sound;
     soundBtn.textContent = state.sound ? 'Sound on' : 'Sound off';
     soundBtn.setAttribute('aria-pressed', String(state.sound));
+    if (!state.sound) ach && ach.unlock('silent');
   });
 
   // ---------- windows ----------

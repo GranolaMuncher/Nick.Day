@@ -163,6 +163,7 @@ function taskmgr(ctx) {
       const b = e.target.closest('button'); if (!b) return;
       if (b.dataset.end) { ctx.beep(260, 0.08); ended[b.dataset.end] = true; render(); }
       else if (b.hasAttribute('data-endall')) { ctx.beep(200, 0.2); PROCS.forEach((p) => { ended[p.id] = true; }); render(); }
+      if (PROCS.every((p) => ended[p.id])) ctx.ach('taskkill');
       else if (b.hasAttribute('data-reset')) { ended = {}; render(); }
     });
   }
@@ -371,6 +372,7 @@ function estimate(ctx) {
       else if (b.hasAttribute('data-reset')) { sel = {}; team = 'solo'; r.querySelectorAll('[data-item]').forEach((c) => { c.checked = false; }); update(); }
       else if (b.hasAttribute('data-send')) {
         const o = calcOut();
+        if (o.picked.length) ctx.ach('scopesent');
         if (o.picked.length) ctx.setScope(`Scope: ${o.picked.join(', ')}\nTeam: ${o.team}\nBallpark: ${o.range}${o.monthly.startsWith('+') ? ' ' + o.monthly : ''}`);
         ctx.openWin('contact');
       }
@@ -402,7 +404,7 @@ function inbox(ctx) {
     r.addEventListener('click', (e) => {
       const b = e.target.closest('button'); if (!b) return;
       if (b.dataset.msg) { cur = Number(b.dataset.msg); render(); }
-      else if (b.hasAttribute('data-apply')) { ctx.setScope('Founding client inquiry'); ctx.openWin('contact'); }
+      else if (b.hasAttribute('data-apply')) { ctx.ach('founding'); ctx.setScope('Founding client inquiry'); ctx.openWin('contact'); }
     });
   }
   return { open() { bind(); render(); } };
@@ -554,6 +556,7 @@ function game(ctx) {
       try { board = loadLocal().concat([{ name, score: g.score }]).sort((a, b) => b.score - a.score).slice(0, 10); localStorage.setItem('nickos-scores', JSON.stringify(board)); } catch (ex) { /* */ }
       if (shared) shared = false;
     }
+    ctx.ach('highscore');
     ui.savedMsg.textContent = ok ? 'Saved to the shared high-score board.' : 'Saved to the high-score board on this device.';
     ui.savedMsg.hidden = false;
     renderBoard();
