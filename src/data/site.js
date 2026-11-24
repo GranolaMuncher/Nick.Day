@@ -13,6 +13,6 @@ export const site = {
   newClientSpotsThisQuarter: 2,
   // Seconds of no activity before the screensaver starts.
   idleSeconds: 30,
-  replyTime: '2–3 days',
+  replyTime: '1–2 days',
   booking: 'available now',
 };
