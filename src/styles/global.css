@@ -65,6 +65,25 @@ summary:hover { color: var(--amber); }
 .icons { position: absolute; top: 24px; left: 24px; display: grid; grid-template-rows: repeat(5, auto); grid-auto-flow: column; gap: 6px 4px; }
 .icon { width: 112px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: transparent; border: 0; color: var(--amber); cursor: pointer; font: inherit; font-size: 13px; }
 .folder { display: flex; flex-wrap: wrap; gap: 6px 4px; }
+/* ---------- achievements ---------- */
+.toasts { position: absolute; right: 16px; bottom: 68px; z-index: 8600; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.toast { pointer-events: auto; display: flex; gap: 12px; align-items: center; width: 340px; max-width: calc(100vw - 32px); padding: 12px 14px; text-align: left; background: var(--panel); color: var(--amber); border: 2px solid var(--amber); box-shadow: 6px 6px 0 rgba(255,181,71,.15); font: inherit; cursor: pointer; transform: translateY(24px); opacity: 0; transition: transform .3s ease, opacity .3s ease; }
+.toast.in { transform: none; opacity: 1; }
+.toast .tt { display: block; font-size: 11px; color: var(--dim); letter-spacing: .04em; }
+.toast .tn { display: block; font-size: 26px; line-height: 1.05; color: var(--light); }
+.toast .td { display: block; font-size: 13px; }
+.toast.legendary { background: var(--amber); color: var(--bg); text-shadow: none; animation: legend 1s ease-in-out 3; }
+.toast.legendary .tt, .toast.legendary .tn { color: var(--bg); }
+@keyframes legend { 50% { box-shadow: 0 0 28px rgba(255,181,71,.8); } }
+.ach { display: flex; gap: 12px; align-items: flex-start; padding: 10px 12px; border: 1px dashed var(--deep); }
+.ach .trophy { color: var(--deep); flex: 0 0 auto; }
+.ach .an { font-size: 22px; font-weight: 400; line-height: 1.05; }
+.ach .tier { font-size: 11px; color: var(--dim); white-space: nowrap; }
+.ach.on { border: 1px solid var(--dim); }
+.ach.on .trophy { color: var(--amber); }
+.ach.on.gold { border-color: var(--amber); }
+.ach.on.legendary { border: 2px solid var(--amber); background: rgba(255,181,71,.08); }
+.ach.legendary .tier { color: var(--light); }
 .about-head { display: grid; grid-template-columns: 160px minmax(0, 1fr); grid-template-areas: "img h" "img p"; grid-template-rows: auto 1fr; gap: 8px 16px; }
 .about-head img { grid-area: img; width: 160px; height: 200px; object-fit: cover; border: 2px solid #FFB547; box-shadow: 4px 4px 0 rgba(255,181,71,.15); }
 .about-head h2 { grid-area: h; margin: 0; font-size: 40px; font-weight: 400; line-height: 1; }
@@ -135,6 +154,8 @@ summary:hover { color: var(--amber); }
   .grid2 { grid-template-columns: minmax(0, 1fr); }
   .plain h1 { font-size: 40px; }
   .taskbar .pill, .taskbar .uptime { display: none; }
+  .toasts { left: 8px; right: 8px; bottom: 60px; }
+  .toast { width: 100%; max-width: none; }
   .about-head { grid-template-columns: 112px minmax(0, 1fr); grid-template-areas: "img h" "p p"; grid-template-rows: auto auto; gap: 14px 14px; align-items: center; }
   .about-head img { width: 112px; height: 140px; }
   #shutdown { padding: 0 10px; }
@@ -142,6 +163,7 @@ summary:hover { color: var(--amber); }
   #shutdown .vt { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .toast { transition: none; } .toast.legendary { animation: none; }
   .flick, .blink, .starlayer, .star, .drift { animation: none; }
   .drift { left: 24px; }
 }
