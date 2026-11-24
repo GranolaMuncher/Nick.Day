@@ -53,7 +53,11 @@ export async function onRequestPost({ request, env }) {
     }),
   });
 
-  if (!res.ok) return json({ ok: false, error: 'Couldn’t send right now.' }, 502);
+  if (!res.ok) {
+    // Visible in Cloudflare: Worker > Observability, or `npx wrangler tail`.
+    console.error('Resend error', res.status, (await res.text()).slice(0, 500));
+    return json({ ok: false, error: 'Couldn’t send right now.' }, 502);
+  }
   return json({ ok: true });
 }
 

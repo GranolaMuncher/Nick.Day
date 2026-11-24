@@ -30,6 +30,7 @@ a:hover { color: var(--light); }
 .lnk { background: transparent; border: 0; padding: 0; color: var(--amber); font: inherit; text-decoration: underline; cursor: pointer; }
 .lnk:hover { color: var(--light); }
 .field { width: 100%; background: var(--bg); border: 1px solid var(--dim); color: var(--amber); font: inherit; padding: 10px 12px; }
+.field:-webkit-autofill, .field:-webkit-autofill:hover, .field:-webkit-autofill:focus { -webkit-text-fill-color: var(--amber); -webkit-box-shadow: 0 0 0 1000px var(--bg) inset; caret-color: var(--amber); transition: background-color 9999s; }
 .field:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber); }
 .range { width: 100%; accent-color: var(--amber); height: 28px; }
 .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
