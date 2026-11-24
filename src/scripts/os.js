@@ -13,7 +13,7 @@ const BOOT = [
   'Loading: web_stack.drv ........ Astro / Stripe / Cloudflare',
   'Loading: agents.exe ........... ready',
   'Loading: growth.drv ........... SEO / ads',
-  'Mounting desktop ............. 13 items',
+  'Mounting desktop ............. 8 items',
   'Welcome, visitor.',
 ];
 
@@ -159,7 +159,7 @@ export function initOS() {
     state.lastAct = Date.now();
     if (!saver.hidden) { saver.hidden = true; saver.textContent = ''; }
   }
-  ['pointerdown', 'pointermove', 'keydown', 'wheel', 'input', 'touchstart'].forEach((ev) => window.addEventListener(ev, activity, { passive: true }));
+  ['pointerdown', 'keydown', 'wheel', 'input', 'touchstart'].forEach((ev) => window.addEventListener(ev, activity, { passive: true }));
   document.addEventListener('scroll', activity, { passive: true, capture: true });
   function startSaver() {
     const layer = (seed, cls) => {
