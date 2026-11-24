@@ -240,7 +240,13 @@ function terminal(ctx) {
   const OPEN = { services: 'services', work: 'work', experience: 'experience', about: 'about', contact: 'contact', tools: 'tools', diagnose: 'diagnose', 'diagnose.exe': 'diagnose', calc: 'calc', chaos_calc: 'calc', 'chaos_calc.exe': 'calc', taskmgr: 'taskmgr', 'taskmgr.exe': 'taskmgr', defrag: 'defrag', 'defrag.exe': 'defrag', recycle: 'recycle', bin: 'recycle', estimate: 'estimate', 'estimate.exe': 'estimate', inbox: 'inbox', 'inbox.exe': 'inbox' };
   const later = (k, ms = 200) => setTimeout(() => ctx.openWin(k), ms);
   function print(lines) {
-    lines.forEach((l) => { const d = document.createElement('div'); d.className = 'ln'; d.textContent = l; out.appendChild(d); });
+    lines.forEach((l) => {
+      const d = document.createElement('div'); d.className = 'ln'; d.textContent = l;
+      // hanging indent: wrapped text lines up under the value column ("  CPU ....... value", "  ls      value")
+      const m = l.match(/^\s+\S.*?(?:\s\.{2,}\s|\S\s{2,})/) || l.match(/^\s+/);
+      if (m) { d.style.paddingLeft = m[0].length + 'ch'; d.style.textIndent = -m[0].length + 'ch'; }
+      out.appendChild(d);
+    });
     while (out.childElementCount > 300) out.firstChild.remove();
     scroller.scrollTop = scroller.scrollHeight;
   }
@@ -248,9 +254,9 @@ function terminal(ctx) {
     const cmd = raw.trim(), lc = cmd.toLowerCase();
     let o = [];
     if (lc === '') o = [];
-    else if (lc === 'help') o = ['Commands:', '  whoami          who runs this machine', '  ls              list the desktop', '  open <name>     open a window (e.g. open work)', '  services        what I build', '  skills          everything I do', '  stream          where I go live', '  prices          starting prices', '  diagnose        run a systems health scan', '  estimate        ballpark a project', '  specs           machine specs', '  hire nick       start a project', '  date, uptime, echo <text>, clear, exit', '  ...and a few hidden ones.'];
+    else if (lc === 'help') o = ['Commands:', '  whoami       who runs this machine', '  ls           list the desktop', '  open <name>  open a window', '  services     what I build', '  skills       everything I do', '  stream       where I go live', '  prices       starting prices', '  diagnose     systems health scan', '  estimate     ballpark a project', '  specs        machine specs', '  hire nick    start a project', '  date, uptime, echo, clear, exit', '  ...and a few hidden ones.', 'Try: open work'];
     else if (lc === 'whoami') o = ['visitor', 'But this machine belongs to Nick Day: I build the systems that let businesses grow.', 'SF Bay Area. Operations, automation, websites and custom tools.'];
-    else if (lc === 'ls' || lc === 'dir' || lc === 'ls -la') o = ['services/  work/  experience/  about/  contact/  tools/  terminal  Recycle Bin', 'tools/: diagnose.exe  chaos_calc.exe  taskmgr.exe  defrag.exe  estimate.exe  inbox.exe'];
+    else if (lc === 'ls' || lc === 'dir' || lc === 'ls -la') o = ['services/  work/  experience/  about/  contact/  tools/  terminal  Recycle Bin', 'tools/', '  diagnose.exe  chaos_calc.exe', '  taskmgr.exe   defrag.exe', '  estimate.exe  inbox.exe'];
     else if (/^(open |cd |\.\/)/.test(lc)) {
       const name = lc.replace(/^open\s+|^cd\s+|^\.\//, '').replace(/^\.\//, '').replace(/\/$/, '');
       if (OPEN[name]) { o = [`opening ${name} ...`]; later(OPEN[name]); } else o = [`no such file: ${name}. Try "ls".`];
@@ -260,7 +266,7 @@ function terminal(ctx) {
     else if (lc === 'skills') o = ['Systems · automation & agents · web & e-commerce · print-on-demand', 'SEO & ads · data analysis · CRM & sales ops · streaming production'];
     else if (lc === 'stream' || lc === 'twitch') o = ['Live DJ sets and build sessions on twitch.tv/lunch00', 'Production: OBS + Streamer.bot', 'Record: 30 days straight.'];
     else if (lc === 'specs' || lc === 'neofetch') o = ['NICK-PC (custom build, assembled by hand)', '  CPU ....... 1x human, overclocked on single-origin coffee', '  GPU ....... renders one more match at unlimited fps', '  RAM ....... remembers every client requirement; forgets where the keys are', '  Storage ... 2 TB of drum & bass, 4 GB free', '  Cooling ... two dogs (unreliable)', '  PSU ....... Tao Te Ching, 81 chapters', '  Uptime .... 30 days straight on Twitch'];
-    else if (lc === 'diagnose') { o = ['launching diagnose.exe ...']; later('diagnose'); }
+    else if (lc === 'diagnose' || lc === 'scan') { o = ['launching diagnose.exe ...']; later('diagnose'); }
     else if (lc === 'estimate') { o = ['launching estimate.exe ...']; later('estimate'); }
     else if (lc === 'inbox' || lc === 'mail') { o = ['opening inbox.exe ...']; later('inbox'); }
     else if (['play', 'snake', 'scopecreep', 'scope creep', 'game'].includes(lc)) { o = ['You found it.', 'launching scopecreep.exe ...']; later('game', 250); }
