@@ -71,18 +71,35 @@ export function createAchievements(ctx) {
     const notes = tier === 'legendary' ? [523, 659, 784, 1047, 1319] : tier === 'gold' ? [659, 784, 1047] : [784, 1047];
     notes.forEach((f, i) => setTimeout(() => ctx.beep(f, 0.09), i * 90));
   }
+  const compact = window.matchMedia('(max-width: 760px)').matches;
+  const counter = document.getElementById('trophy-count'), trophyBtn = document.getElementById('trophies');
+  function count() {
+    if (!counter) return;
+    counter.textContent = list.filter((a) => got[a.id]).length;
+  }
+  function ping() {
+    if (!trophyBtn) return;
+    trophyBtn.classList.remove('ping'); void trophyBtn.offsetWidth; trophyBtn.classList.add('ping');
+  }
   function nextToast() {
     if (showing || !queue.length) return;
     showing = true;
     const a = queue.shift(), t = TIERS[a.tier];
     const el = document.createElement('button');
-    el.type = 'button'; el.className = `toast ${a.tier}`;
-    el.innerHTML = `<span class="trophy" aria-hidden="true">${trophySvg(28)}</span><span style="min-width:0"><span class="tt">ACHIEVEMENT UNLOCKED · ${t.label} · +${t.pts}</span><span class="tn vt">${esc(a.name)}</span><span class="td">${esc(a.desc)}</span></span>`;
-    el.addEventListener('click', () => { ctx.openWin('achievements'); el.remove(); showing = false; nextToast(); });
+    el.type = 'button'; el.className = `toast ${a.tier}${compact ? ' compact' : ''}`;
+    el.setAttribute('aria-label', `Achievement unlocked: ${a.name}`);
+    el.innerHTML = compact
+      ? `<span class="trophy" aria-hidden="true">${trophySvg(18)}</span><span class="tn vt">${esc(a.name)}</span><span class="tt">+${t.pts}</span>`
+      : `<span class="trophy" aria-hidden="true">${trophySvg(28)}</span><span style="min-width:0"><span class="tt">ACHIEVEMENT UNLOCKED · ${t.label} · +${t.pts}</span><span class="tn vt">${esc(a.name)}</span><span class="td">${esc(a.desc)}</span></span>`;
+    let gone = false;
+    const done = () => { if (gone) return; gone = true; el.classList.remove('in'); setTimeout(() => { el.remove(); showing = false; nextToast(); }, 250); };
+    // phones: tap just dismisses (the taskbar trophy opens the window). desktop: click opens achievements.exe.
+    el.addEventListener('click', () => { if (!compact) ctx.openWin('achievements'); done(); });
     host.appendChild(el);
-    jingle(a.tier);
+    jingle(a.tier); ping();
     requestAnimationFrame(() => el.classList.add('in'));
-    setTimeout(() => { el.classList.remove('in'); setTimeout(() => { el.remove(); showing = false; nextToast(); }, 350); }, a.tier === 'legendary' ? 6500 : 4200);
+    const base = a.tier === 'legendary' ? 6000 : compact ? 2500 : 4000;
+    setTimeout(done, queue.length ? Math.min(base, 1400) : base);
   }
 
   // ---------- shared stats ----------
@@ -97,7 +114,7 @@ export function createAchievements(ctx) {
   function unlock(id) {
     const a = list.find((x) => x.id === id);
     if (!a || got[id]) return;
-    got[id] = Date.now(); store(KEY, got);
+    got[id] = Date.now(); store(KEY, got); count();
     queue.push(a); nextToast();
     report({ id });
     if (stats) { stats.counts[id] = (stats.counts[id] || 0) + 1; }
@@ -158,9 +175,10 @@ export function createAchievements(ctx) {
     const r = ctx.body('achievements'); if (!r || r.dataset.bound) return; r.dataset.bound = '1';
     r.addEventListener('click', (e) => {
       if (!e.target.closest('[data-ach-reset]')) return;
-      got = {}; seen.open = []; seen.cmds = []; store(KEY, got); store(SEEN, seen); render();
+      got = {}; seen.open = []; seen.cmds = []; store(KEY, got); store(SEEN, seen); render(); count();
     });
   }
+  count();
   return { unlock, opened, command, visit, open() { bind(); render(); loadStats(); } };
 }
 

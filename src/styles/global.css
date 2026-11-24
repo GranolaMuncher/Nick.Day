@@ -74,6 +74,13 @@ summary:hover { color: var(--amber); }
 .toast .td { display: block; font-size: 13px; }
 .toast.legendary { background: var(--amber); color: var(--bg); text-shadow: none; animation: legend 1s ease-in-out 3; }
 .toast.legendary .tt, .toast.legendary .tn { color: var(--bg); }
+.toast.compact { width: 100%; padding: 8px 12px; gap: 10px; border-width: 1px; box-shadow: none; }
+.toast.compact .tn { font-size: 20px; flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toast.compact .tt { font-size: 13px; color: var(--light); }
+.taskbar .trophies { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+.taskbar .trophies.ping { animation: ping .8s ease-out; }
+@keyframes ping { 0% { background: var(--amber); color: var(--bg); } 100% { background: transparent; } }
+#sound { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
 @keyframes legend { 50% { box-shadow: 0 0 28px rgba(255,181,71,.8); } }
 .ach { display: flex; gap: 12px; align-items: flex-start; padding: 10px 12px; border: 1px dashed var(--deep); }
 .ach .trophy { color: var(--deep); flex: 0 0 auto; }
@@ -169,6 +176,7 @@ summary:hover { color: var(--amber); }
   #shutdown { padding: 0 10px; }
   .taskbar .tbtn { padding: 0 8px; }
   #shutdown .vt { display: none; }
+  #sound .lbl { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .toast { transition: none; } .toast.legendary { animation: none; }

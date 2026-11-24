@@ -40,7 +40,9 @@ export function initOS() {
   const soundBtn = $('#sound');
   soundBtn.addEventListener('click', () => {
     state.sound = !state.sound;
-    soundBtn.textContent = state.sound ? 'Sound on' : 'Sound off';
+    $('.lbl', soundBtn).textContent = state.sound ? 'Sound on' : 'Sound off';
+    $('.on', soundBtn).style.display = state.sound ? '' : 'none';
+    $('.off', soundBtn).style.display = state.sound ? 'none' : '';
     soundBtn.setAttribute('aria-pressed', String(state.sound));
     if (!state.sound) ach && ach.unlock('silent');
   });
