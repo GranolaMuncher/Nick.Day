@@ -1,8 +1,6 @@
 // POST /api/contact  ->  emails the inquiry to you through Resend.
-// Environment variables (Cloudflare Pages > Settings > Variables and secrets):
-//   RESEND_API_KEY  (secret)  your Resend API key
-//   CONTACT_TO                where inquiries go, e.g. nicholastday@gmail.com
-//   CONTACT_FROM              a sender on your verified Resend domain, e.g. "NICK.OS <hello@nick.day>"
+// Settings: CONTACT_TO and CONTACT_FROM live in wrangler.jsonc; the API key is a secret:
+//   npx wrangler secret put RESEND_API_KEY
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 const clean = (v, n) => String(v ?? '').replace(/\r/g, '').trim().slice(0, n);
@@ -59,6 +57,3 @@ export async function onRequestPost({ request, env }) {
   return json({ ok: true });
 }
 
-export function onRequest() {
-  return json({ ok: false, error: 'Use POST.' }, 405);
-}

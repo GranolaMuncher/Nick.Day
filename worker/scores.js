@@ -1,6 +1,6 @@
 // GET  /api/scores  ->  top 10 Scope Creep scores
 // POST /api/scores  ->  { name, score } adds a score
-// Needs a KV namespace bound as SCORES (Cloudflare Pages > Settings > Bindings).
+// Needs a KV namespace bound as SCORES in wrangler.jsonc.
 // Without it, the game falls back to saving scores on each visitor's device.
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });

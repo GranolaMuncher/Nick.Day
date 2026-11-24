@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nick-day",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
+  },
+  "vars": {
+    "CONTACT_TO": "nicholastday@gmail.com",
+    "CONTACT_FROM": "NICK.OS <hello@nick.day>"
+  },
+  // High-score board: add the KV namespace once it exists, e.g.
+  // "kv_namespaces": [{ "binding": "SCORES", "id": "<id from: npx wrangler kv namespace create nickday-scores>" }],
+  "observability": { "enabled": true }
+}
