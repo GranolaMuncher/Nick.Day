@@ -9,7 +9,7 @@
     "not_found_handling": "404-page"
   },
   "vars": {
-    "CONTACT_TO": "nicholastday@gmail.com",
+    "CONTACT_TO": "me@nick.day",
     "CONTACT_FROM": "NICK.OS <hello@nick.day>"
   },
   // Scope Creep high-score board (namespace "nickday-scores")

@@ -2,7 +2,7 @@
 export const site = {
   name: 'Nicholas Day',
   url: 'https://nick.day',
-  email: 'nicholastday@gmail.com',
+  email: 'me@nick.day',
   linkedin: 'https://www.linkedin.com/in/nicholastday/',
   twitch: 'https://twitch.tv/lunch00',
   region: 'SF Bay Area',
