@@ -47,3 +47,7 @@ Every push to `main` rebuilds and redeploys automatically.
 - Hidden game: type `play` in the terminal. Reaching 25 unlocks the checklist and the free 20-minute systems roast.
 - High scores are lightly protected (name cleanup, score cap, one save per visitor per minute). A determined person can still fake a score; you confirm every claim on a call anyway.
 - The contact form has a hidden honeypot field to catch basic spam bots. If spam gets through, add Cloudflare Turnstile.
+
+## CV
+
+The downloadable CV (`public/files/Nicholas-Day-CV.pdf`) is built from `cv/cv.html`. Edit the HTML, then run `python3 cv/make-pdf.py` from the repo root (needs `pip install playwright` and `playwright install chromium`). Keep it to two pages and with no job-title line under the name.
